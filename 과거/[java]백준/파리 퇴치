@@ -1,0 +1,48 @@
+import java.util.Scanner;
+
+public class Solution {
+
+	public static void main(String[] args) {
+
+		Scanner s = new Scanner(System.in);
+		int T = s.nextInt();
+		
+		for(int i=0;i<T;i++)
+		{
+            int answer = 0;
+			int m = s.nextInt();
+			int n = s.nextInt();
+			int max_idx = m-n;
+			int arr[][] = new int[m][m];
+			
+			for(int j=0;j<m;j++)
+			{
+				for(int k=0;k<m;k++)
+					arr[j][k] = s.nextInt();
+			}
+			
+			
+			for(int j=0;j<=max_idx;j++)
+			{
+				for(int k=0;k<=max_idx;k++)
+				{
+					int sum = 0;
+					
+					for(int p=0;p<n;p++)
+					{
+						for(int q=0;q<n;q++)
+						{
+							sum += arr[j+p][k+q];
+						}
+					}
+					
+					if(answer < sum)
+						answer = sum;
+				}
+			}
+			
+			System.out.println("#" + (i+1) + " " + answer);
+		}
+		
+		}
+	}

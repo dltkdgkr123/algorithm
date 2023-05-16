@@ -1,0 +1,273 @@
+/*
+
+소수 : 1과 자기 자신으로만 나누어떨어지는 수
+
+ 소수판별 https://jm-park.github.io/algorithm/2018/08/06/Prime-Number(%EC%86%8C%EC%88%98)-%ED%8C%90%EB%B3%84%EB%B2%95-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html
+1. pow/sqrt 제곱수/제곱근 구하는 함수 사용
+2. 에라토스테네스의 체 사용
+
+정렬 후 만들어지는 가장 큰 수를 찾은 후, 그 소수 내에서 일치여부만 확인
+그 수보다 작은 소수들을 구한 후, 만들어지는 numbers의 조합들과 비교
+
+find()함수 string은 string헤더, vector는 algorithm 헤더에 포함됨에 주의
+ v.find(...) 가 아닌 find(...)에 주의 
+ 
+반복문에서 dfs 쓸 때 항상 재귀호출 후 현상유지 시켜야함에 주의
+  
+ ----------------------------------------------------클론 코딩에서 배운 점-------------------------------
+ 
+조건문 및 return문에 if(a%b == 0) 대신 if(a%b)로 간략하게 쓸 수 있음/ 해당시마다 answer을 ++하여 최종 return하지않고 답이 저장된 컨테이너의 size를 return할 수 있음
+bool 함수를 구현하여 false/true 여부에 따라 해당값을 집어넣는 방식을 쓸 수 있음
+dfs을 사용하지 않더라도 while()에 next_permutation()을 넣고, for문/for each문으로 string을 놓고 char을 더하는 방식으로 모든 경우의 수를 구할 수 있음
+-> 방식은 dfs와 유사하나, 순환호출을 하지 않으므로 실행시간/메모리에 훨씬 유리할듯 함
+-> next_permutation()는 다음수열로 바꿔주고, 반환하였다면 함수 자체는 true를 반환한다. 함수 뜻 자체가 "다음"수열이므로 현재수열도 사용해야 할 땐 do while문을 
+-> int <-> char은 굳이 명시하지 않아도 자동 형변환되나 (char)0~9는 (int)48~57임에 주의, 자리수를 늘려가며 대입하고 싶을 땐 10을 곱해가며 +=해준다
+
+
+코드1 모든 수열의 모든 경우의수를 소수인지 판별 - 소수판별 알고리즘도 수정하니 매우 빠름
+코드2 에라토스테네스의 체를 사용하여 최대값까지의 모든 소수를 구한 후 모든 경우의 수와 비교 - 시간초과
+코드3 모든 경우의 수 각각 소수인지 판별 - 시간초과
+*/
+
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <unordered_set>
+#include <iostream>
+using namespace std;
+
+bool isPrime(int a)
+{
+
+        if(!(a % 2) && a != 2) // 짝수고 2가 아니면 false
+            return false;
+    
+        for (int i = 3; i * i <= a; i += 2) // a>=9일 떄 (3,5,7은 소수) 3부터 a의 제곱근까지 홀수만큼 반복
+        {
+            if (!(a % i)) // i로 나눠떨어지면 false -> true이면 false
+                return false;
+            
+        }
+
+        return a>1; // 2 이상이면 true -> 0,1이면 위 조건문 모두 실행하지않음/false
+
+
+}
+
+int solution(string numbers) {
+    int answer = 0;
+    unordered_set<int> s; // 중복여부만 판독, 정렬필요 x
+
+    sort(numbers.begin(), numbers.end()); // 수열탐색을 위해 오름차순 정렬
+
+    do // next_permutation가 다음수열부터 이므로 do while문 사용
+    {
+        int number = 0;
+
+        for (char c : numbers)
+        {
+            number = number * 10 + (c - '0'); // 처음엔 number =0이니 곱해도 무관 앞자리 0이여도 지장없음
+
+            if (isPrime(number)) // 소수면 set에 insert
+                s.insert(number);
+        }
+
+    } while (next_permutation(numbers.begin(), numbers.end())); // 다음 수열로 바꾸고 함수는 true 반환 -> 다음수열 없으면 false 반환
+
+
+    return s.size(); // 중복제거한 원소의 개수 return
+}
+
+
+
+
+
+
+
+/*
+
+실행시간 초과1
+
+
+#include <string>
+#include <vector>
+#include <math.h>
+#include <algorithm>
+#include <set>
+#include <iostream>
+
+using namespace std;
+
+set<int> s_sosu; //set 이용하여 정렬 및 중복제거
+set<int> s_dfs;
+
+void sosu(int a) // 에라토스테네스의 체로 소수를 구하는 함수
+{
+
+	
+	int sqrt_a = sqrt(a);
+	vector<int> v;
+	
+	for (int i = 0; i <= a; i++)
+		v.push_back(i);
+
+	for (int i = 0; i <= 1; i++) // 0,1 제외
+		v[i] = 0;
+
+	for (int i = 2; size_t(2) * size_t(i)< v.size(); i++) // 2를 제외한 짝수 제외
+		v[size_t(2) * size_t(i)] = 0;
+	
+
+
+	for (int i = 3; i <= sqrt_a; i++) //3부터 (정수형)제곱근 까지
+	{
+		if (i % 2 != 0 && v[i] != 0) // 홀수이고 소수면
+		{
+			for (int j = 2; size_t(j) * size_t(i) < v.size(); j = j++) // 자기자신 제외한 배수 제외
+				v[size_t(j) * size_t(i)] = 0;
+		}
+	}
+		
+	for (int i = 0; i < v.size(); i++) // 제외되지 않은 값 push
+		if (v[i] != 0)
+			s_sosu.insert(v[i]);
+	
+}
+
+void dfs(string& numbers, vector<bool> visited, string s) // dfs로 string으로 만들 수 있는 모든 수를 찾는 함수
+{
+	for (int i = 0; i < numbers.length(); i++)
+	{
+		if (visited[i] == false) // 방문하지 않았으면
+		{
+			s += numbers[i];
+			visited[i] = true;
+
+			s_dfs.insert(stoi(s)); // 모든 자리수를 넣어야 하므로 먼저 insert 
+			
+			dfs(numbers, visited, s); // dfs실행 후 현상복귀
+			s.erase(s.end()-1); // end()-1 까지가 문자열, end()는 null값
+			visited[i] = false;
+		}
+	}
+}
+
+int solution(string numbers) {
+
+
+	int answer = 0;
+	vector<bool>visited(numbers.size(), false); // numbers 크기의 방문여부기록 벡터 생성
+
+	sort(numbers.begin(), numbers.end(), greater<>()); // numbers를 최대값으로 정렬
+
+	sosu(stoi(numbers)); // 최대값 이하 소수 탐색
+	dfs(numbers, visited, ""); // string으로 만들수 있는 모든 수 탐색
+
+	set<int>::iterator iter = s_sosu.begin();
+	set<int>::iterator iter2 = s_dfs.begin();
+	
+
+	while (iter != s_sosu.end() && iter2 != s_dfs.end()) { // 최대값과 이하 소수와 string으로 만들 수 있는 모든수를 비교하여 일치하면 answer++;
+
+		if (*iter == *iter2)
+		{
+			answer++;
+			iter++;
+		}
+
+		else if (*iter < *iter2)
+			iter++;
+
+		else if (*iter > *iter2)
+			iter2++;
+
+	}
+	
+	return answer;
+}
+
+int main() {
+	clock_t startTime = clock();
+
+	int a;
+	a = solution("1231");
+
+	cout << a << "\n"; // 값 = "1231" 결과 = 18 [2, 3, 11, 13, 23, 31, 113, 131, 211, 311, 1123, 1213, 1231, 1321, 2113, 2131, 2311, 3121]
+
+	clock_t endTime = clock();
+
+	clock_t elapsed = endTime - startTime;
+	double timeInSecond = (double)(elapsed / CLOCKS_PER_SEC);
+
+	cout << "실행시간: " << timeInSecond << "s(" << elapsed << "ms)" << "\n";
+
+}
+
+*/
+
+
+
+/*
+실행시간 초과2
+
+
+#include <string>
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
+
+using namespace std;
+
+unordered_set<string> sosu;
+
+bool is_true(float n) // (int)a -> (float)a 소수인지 확인하는 함수
+{
+    bool b = true;
+
+    for (int i = 2; i < n; i++) // 소수n : 2부터 n-1까지 나누었을 때 나머지가 0이 아님
+    {
+        
+        if ((n/i - (int)n/i) == 0) // (float)x - (int)x == 0 -> 나머지가 0이면
+        {
+            b = false;
+            break;
+        }
+    }
+    return b;
+}
+
+
+void dfs(string& numbers, vector<int> v, string s)
+{
+
+    for (int i = 0; i < numbers.length(); i++)
+    {
+        if (find(v.begin(), v.end(), i) != v.end()) // i번쨰를 사용하지 않았으면
+            v.push_back(i); // i를 사용했다고 표시하고
+            s += numbers[i]; // s에 숫자를 더함
+
+        if (is_true(stof(s)) == true) // int s가 소수이면
+            sosu.insert(s); // set에 insert -> 중복제거 위해 set 사용
+
+        dfs(numbers, v, s); //dfs 실행
+        v.pop_back();  // 다음 반복을 위해 최근 추가한 값 제거
+        s.erase(s.end());
+    }
+
+}
+
+int solution(string numbers) {
+    int answer = 0;
+    vector<int> v;
+
+    dfs(numbers, v, "");
+
+    unordered_set<string>::iterator iter = sosu.begin();
+
+    for (auto iter = sosu.begin(); iter != sosu.end(); iter++)
+        answer++;
+
+    return answer;
+}
+
+*/

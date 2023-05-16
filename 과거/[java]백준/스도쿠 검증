@@ -1,0 +1,116 @@
+// set에 1~9를 넣고, 숫자를 저장한 문자열과 비교하여 set의 size가 0이 아닐 시, 숫자가 중복이므로 false
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution
+{
+	static int len = 9;
+	static int size = len*len;
+	
+	static boolean checker(String s)
+	{
+		Set<Integer> hash = new HashSet<>();
+		
+		for(int i=1;i<=len;i++)
+			hash.add(i);
+		
+		for(int i=0;i<len;i++)
+			hash.remove(s.charAt(i)-'0');
+		
+		if(hash.size()==0)
+		return true;
+		
+		return false;
+	}
+	
+	public static void main(String args[]) throws Exception
+	{
+		
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+			
+				int answer = 1;
+				int arr[][] = new int[len][len];
+				
+				for(int i=0;i<len;i++)
+				{
+					for(int j=0;j<len;j++)
+						arr[i][j] = sc.nextInt();
+				}
+				
+				for(int i=0;i<len;i++) // 가로비교
+				{	
+					String s= "";
+					
+					for(int j=0;j<len;j++)
+						s += arr[i][j];
+					
+					boolean b = checker(s);
+					
+					if(!b)
+					{
+						answer = 0;
+						break;	
+					}
+					
+				}
+				
+				if(answer != 0)
+				{
+					for(int i=0;i<len;i++) // 세로비교
+					{	
+						String s= "";
+						
+						for(int j=0;j<len;j++)
+							s += arr[j][i];
+	
+						boolean b = checker(s);
+						
+						if(!b)
+						{
+							answer = 0;
+							break;	
+						}
+					}
+				}
+				
+				int idx = len/3;
+				
+				if(answer != 0)
+				{
+					for(int i=0;i<idx;i += idx) // 블럭비교
+					{	
+						
+						for(int j=0;j<idx;j += idx)
+						{
+							String s= "";
+							
+							for(int k=i;k<i+3;k++)
+							{
+								for(int q=j;q<j+3;q++)
+									s += arr[k][q];
+							}
+							
+							boolean b = checker(s);
+							
+							if(!b)
+							{
+								answer = 0;
+								break;	
+							}
+						}
+						
+					}
+				}
+				
+				System.out.println("#"+test_case+" "+answer);
+		}
+	}
+}

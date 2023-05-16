@@ -1,0 +1,91 @@
+/*
+    접두어 -> 단어의 앞에(머리 두)에 붙어 다른 낱말을 이루는 단어   유의어 : 접미어
+    -> key값의 중간이나 끝에 붙지 않으므로 앞만 비교하면 됨
+
+    동일한 전화번호는 없다 -> key값 중복x
+
+   접두어가 하나라도 존재하면 return -> cnt 필요없이 찾으면 리턴 후 바로 종료해야 실행시간 줄어듦
+
+*/
+
+
+ // 코드 1번 - 정렬사용
+ //    string 정렬기준 = 12 > 1245 > 1254 > 2 이므로, i+1 인덱스에서 i 인덱스값 find == 0이면 false
+ // 정확도,효율 100점 but 해싱 사용하지 않았음
+ 
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool solution(vector<string> phone_book) {
+
+    sort(phone_book.begin(), phone_book.end());
+
+    for (int i = 0; i < phone_book.size()-1; i++)
+    {
+        if(phone_book[i+1].find(phone_book[i], phone_book[i + 1].size()) == 0) // != -1로 하면 다음인덱스 문자열 중간에 포함되었을 떄도 해당되므로 
+        {
+            return false;
+            break;
+        }
+    }
+    return true;
+}
+
+
+
+
+/*
+     코드 2번 - 해싱 
+    정확성 100 효율성 0
+    "어떤" 번호가 다른 번호의 접두어이다 -> 벡터 모든원소 비교해야 함
+    자기자신 제외해야 함
+
+#include <string>
+#include <vector>
+#include <unordered_set>
+
+using namespace std;
+
+bool solution(vector<string> phone_book) {
+    bool answer = true;
+
+    unordered_set<string> hash;
+
+    for (auto p : phone_book)
+    {
+        hash.insert(p);
+    }
+
+    for (auto p : phone_book)
+    {
+        for (auto h : hash)
+        {
+            if (p[0] == h[0]) // [0]이 같을때만 비교
+            {
+                if (p.length() < h.length()) // 길이가 같으면 동일값이거나 다른 값이므로
+                {
+                    for (int i = 1; i <= p.length(); i++) // [1]부터 끝까지 비교
+                    {
+                        if (i == p.length()) // 여기까지 오면 접미어이므로
+                        {
+                            answer = false;
+                            break;
+                        }
+                        if (p[i] == h[i])
+                            continue; // 일치하면 계속 비교
+                        else break;
+
+                    }
+                }
+            }
+
+        }
+    }
+
+    return answer;
+}
+
+*/

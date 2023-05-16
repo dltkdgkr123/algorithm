@@ -1,0 +1,55 @@
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+
+		
+		for(int tc=1;tc<=10;tc++) {
+			
+			int TC = sc.nextInt();
+			int size = 100;
+			int field[][] = new int[size][size];
+			
+			for(int i=0;i<size;i++) {
+				for(int j=0;j<size;j++)
+					field[i][j] = sc.nextInt();
+			}
+			
+			int col = 99;
+			int row = 0;
+			
+			for(int i=0;i<size;i++) {
+					if(field[99][i] == 2) {
+						row = i;
+						break;
+					}
+			}
+				while(col >= 0)
+				{
+					
+					if(row-1 >= 0 && field[col][row-1] == 1)
+					{
+						while(row-1 >= 0 && field[col][row-1] == 1)
+						row--;
+						col--;
+						continue;
+					}
+					else if(row+1 <size && field[col][row+1] == 1)
+					{	
+						while(row+1 <size && field[col][row+1] == 1)
+						row++;
+						col--;
+						continue;
+					}
+					else
+					col--;
+				}
+				
+				System.out.println("#"+TC+" "+row);
+			}
+	}
+}

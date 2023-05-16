@@ -1,0 +1,86 @@
+// 시작과 끝이 0인지 확인해야 정확히 k개인지 셀 수 있음
+// 배열을 검은색 부분(0)으로 둘러싸서, 비교범위를 초과하는 후단의 idx에서도 세기 용이하게함
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+	
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+			int answer = 0;
+			int n = sc.nextInt();
+			int k = sc.nextInt();
+			
+			int arr[][] = new int[n+2][n+2]; // arr default val == 0 == 문제에서의 검은부분
+			
+			for(int i = 1; i <= n; i++) // 최외곽을 제외한 공간에 insert
+			{
+				for(int j = 1; j <= n; j++)
+				arr[i][j] = sc.nextInt();
+			}
+				
+			int idx = n - k + 1; // 비교해야할 최대 idx
+			
+			for(int i = 1; i <= n; i++) // 가로비교
+			{
+				for(int j = 0; j < idx; j++)
+				{
+					if(arr[i][j] == 0) // 해당idx 0이면, next idx부터
+					{
+						int cnt = 1;
+						
+						while(cnt <= k) // k개의 공간이 1인지 확인하고
+						{
+							if(arr[i][j+cnt] == 0)
+								break;
+							cnt++;
+						}
+						
+						if(cnt == k+1) // true면, k+1공간이 0인지 확인
+						{
+							if(arr[i][j+cnt] == 0)
+								answer += 1; // 맞으면 answer++;
+						}
+					}
+				}
+			
+			}
+
+			for(int i = 0; i < idx; i++) // 세로비교
+			{
+				for(int j = 1; j <=n; j++)
+				{
+					if(arr[i][j] == 0)
+					{
+						int cnt = 1;
+						
+						while(cnt <= k)
+						{
+							if(arr[i+cnt][j] == 0)
+								break;
+							cnt++;
+						}
+
+						if(cnt == k+1)
+						{
+							if(arr[i+cnt][j] == 0)
+								answer += 1;
+						}
+					}
+				}
+			
+			}
+			System.out.println("#"+test_case+" "+answer);
+		}
+	}
+		
+}

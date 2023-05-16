@@ -1,0 +1,37 @@
+/*
+
+1. 각 벡터를 더 큰값이 [0]에 오게 정렬
+2. [0] 값 기준 오름차순 정렬
+3. [1]값의 최대를 찾아 곱함
+
+*/
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int solution(vector<vector<int>> sizes) {
+
+    for (int i = 0; i < sizes.size(); i++)
+    {
+        if (sizes[i][0] < sizes[i][1])
+        {
+            int tmp = sizes[i][0];
+            sizes[i][0] = sizes[i][1];
+            sizes[i][1] = tmp;
+        }
+    }
+
+    sort(sizes.begin(), sizes.end(), greater<>());
+
+    int max = 0;
+
+    for (int i = 0; i < sizes.size(); i++)
+    {
+        if (sizes[i][1] > max)
+            max = sizes[i][1];
+    }
+
+    return sizes[0][0] * max;
+}

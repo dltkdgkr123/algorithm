@@ -1,0 +1,137 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Solution_1873_상호의배틀필드_이상학 {
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		
+		int TC = Integer.parseInt(st.nextToken());
+		
+		for(int tc=1; tc<=TC; tc++) {
+			
+			st = new StringTokenizer(br.readLine());
+			int fieldCol = Integer.parseInt(st.nextToken());
+			int fieldRow = Integer.parseInt(st.nextToken());
+			
+			char[][] field = new char[fieldCol][fieldRow];
+			int col = -1, row = -1;
+			char dir =' ';
+
+			for(int i=0;i<fieldCol;i++) {
+				String s = br.readLine();
+
+				
+				for(int j=0;j<fieldRow;j++) {
+					char c = s.charAt(j);
+					field[i][j] = c;
+					if(c == '^' || c == 'v' || c == '<' || c == '>') {
+						col = i;
+						row = j;
+						dir = s.charAt(j);
+					}
+				}
+			}
+			
+			int len = Integer.parseInt(br.readLine());
+			String order  = br.readLine();	
+			
+			for(int i=0;i<len;i++)
+			{
+			switch(order.charAt(i)) {
+			case 'U' : 
+			{	dir = '^';
+				if(col-1 >= 0 && field[col-1][row] == '.')
+				{
+					field[col][row] = '.';
+					field[col-1][row] = '^';
+					col--;
+				}
+				else field[col][row] = '^'; break;
+			}
+			case 'D' : 
+			{	dir = 'v';
+				if(col+1 < fieldCol && field[col+1][row] == '.')
+				{
+					field[col][row] = '.';
+					field[col+1][row] = 'v';
+					col++;
+				}
+				else field[col][row] = 'v'; break;
+			}
+			case 'L' :
+			{	dir = '<';
+				if(row-1 >= 0 && field[col][row-1] == '.')
+				{
+					field[col][row] = '.';
+					field[col][row-1] = '<';
+					row--;
+				}
+				else field[col][row] = '<'; break;
+			}
+			case 'R' :
+			{	dir = '>';
+				if(row+1 < fieldRow  && field[col][row+1] == '.')
+				{
+					field[col][row] = '.';
+					field[col][row+1] = '>';
+					row++;
+				}
+				else field[col][row] =  '>'; break;
+			}
+			case 'S' :
+			{
+				int sCol = col, sRow = row;
+
+				if(dir == '^') {
+					while(--sCol>=0) {
+						if(field[sCol][sRow] == '#') break;
+						if(field[sCol][sRow] == '*') {
+							field[sCol][sRow] = '.'; break;
+						}
+					}
+				}
+				if(dir == 'v') {
+					while(++sCol<fieldCol) {
+						if(field[sCol][sRow] == '#') break;
+						if(field[sCol][sRow] == '*') {
+							field[sCol][sRow] = '.'; break;
+						}
+					}
+				}
+				if(dir == '<') {
+					while(--sRow>=0) {
+						if(field[sCol][sRow] == '#') break;
+						if(field[sCol][sRow] == '*') {
+							field[sCol][sRow] = '.'; break;
+						}
+					}
+				}
+				if(dir == '>') {
+					while(++sRow<fieldRow) {
+						if(field[sCol][sRow] == '#') break;						
+						if(field[sCol][sRow] == '*') {
+							field[sCol][sRow] = '.'; break;
+						}
+					}
+				}
+			}
+
+			
+			}
+
+			}
+				System.out.print("#"+tc+" ");
+
+			for(int i=0;i<fieldCol;i++) {
+				for(int j=0;j<fieldRow;j++)
+					System.out.print(field[i][j]);
+				System.out.println();
+			}
+		}
+	}
+}

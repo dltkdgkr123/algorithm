@@ -1,0 +1,65 @@
+import java.util.Scanner;
+ 
+public class Solution {
+ 
+    public static void main(String[] args) {
+         
+        Scanner s = new Scanner(System.in);
+         
+        int T = s.nextInt();
+     
+        for(int i=0;i<T;i++)
+        {
+            int answer = 0;
+             
+            int first = s.nextInt();
+            int second = s.nextInt();
+                                 
+            int a[] = new int[first];
+            int b[] = new int[second];
+             
+            for(int j=0;j<first;j++)
+                a[j] = s.nextInt();
+             
+            for(int j=0;j<second;j++)
+                b[j] = s.nextInt();
+ 
+            if(first<second)
+            {
+                for(int j = 0; j<=second-first;j++)
+                {
+                    int sum =0;
+                     
+                for(int k = 0;k<first;k++)
+                {
+                    int val = a[k] * b[k+j];
+                    sum += val;
+                }
+                 
+                if(sum > answer)
+                    answer = sum;
+                 
+                }
+            }
+            else
+            {
+                for(int j = 0; j<=first-second;j++)
+                {
+                    int sum =0;
+                     
+                for(int k = 0;k<second;k++)
+                {
+                    int val = b[k] * a[k+j];
+                    sum += val;
+                }
+                 
+                if(sum > answer)
+                    answer = sum;
+                 
+                }
+            }
+ 
+            System.out.println("#"+(i+1)+" "+answer);
+        }
+    }
+}

@@ -1,0 +1,48 @@
+/*
+	first를 기준으로 내림차순 정렬하고 인덱스끝까지 비교하며 second가 더 낮은 idx가 존재하면 break; = 두 순위 다 밀리는것이므로 
+	-> 시간 초과
+	
+	first를 기준으로 오름차순 정렬하고 max값을 v[0].second로 둔 후 더 낮은second가 존재할때마다 cnt++후 max값 갱신
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main()
+{
+	std::vector<int> answer;
+	int cnt = 1; // 앞순위 1등인사람은 무조건 통과
+	int T;
+	std::cin >> T;
+
+	for (int i = 0; i < T; i++)
+	{
+		int n;
+		std::cin >> n;
+
+		std::vector<std::pair<int, int>> v(n);
+
+		for (int j = 0; j < n; j++)
+			std::cin >> v[j].first >> v[j].second;
+
+		sort(v.begin(), v.end());
+		
+		int max = v[0].second;
+
+		for (int k = 1; k < n; k++) // 앞순위 1등인사람보다 순위가 높으면 갱신하고 cnt++;
+		{
+			if (max > v[k].second)
+			{
+				max = v[k].second;
+				cnt++;
+			}
+		}
+
+		answer.push_back(cnt);
+		cnt = 1;
+	}
+		for (int i = 0; i < answer.size(); i++)
+			std::cout << answer[i] << "\n";
+
+}

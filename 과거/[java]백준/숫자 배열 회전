@@ -1,0 +1,65 @@
+// 한 줄에 배열의 일부원소만 출력하므로, rotate를 3번한 모든 원소 출력을 위해
+// -> 1. 9번 roate하거나 2. 배열을 3개 만들어 각각 90,180,270도를 저장해야 함
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+class Solution
+{
+	static String[][] rotate(String arr[][])
+	{
+		int len = arr.length;
+		String arr2[][] = new String[len][len];
+		
+		for(int i=0;i<len;i++)
+		{
+			for(int j=len-1;j>=0;j--)
+				arr2[i][len-(j+1)] = arr[j][i];
+		}
+		
+		return arr2;
+	}
+	
+	public static void main(String args[]) throws Exception
+	{
+
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+
+		for(int test_case = 1; test_case <= T; test_case++)
+		{
+			int n = sc.nextInt();
+			String arr[][] = new String[n][n];
+			
+			for(int i=0;i<n;i++)
+			{
+				for(int j=0;j<n;j++)
+					arr[i][j] = sc.next();
+			}
+			
+				String arr_rotate90[][] = rotate(arr);
+				String arr_rotate180[][] = rotate(arr_rotate90);
+				String arr_rotate270[][] = rotate(arr_rotate180);				
+			
+			
+				System.out.println("#"+test_case);
+				
+				for(int i=0;i<n;i++)
+				{
+					for(int j=0;j<n;j++)
+						System.out.print(arr_rotate90[i][j]);
+					System.out.print(' ');
+					
+					for(int j=0;j<n;j++)
+						System.out.print(arr_rotate180[i][j]);
+					System.out.print(' ');
+					
+					for(int j=0;j<n;j++)
+						System.out.print(arr_rotate270[i][j]);
+					System.out.println();
+				}
+			
+		}
+	}
+}
